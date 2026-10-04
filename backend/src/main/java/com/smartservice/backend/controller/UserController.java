@@ -1,7 +1,11 @@
 package com.smartservice.backend.controller;
 
-import com.smartservice.backend.entity.User;
+import com.smartservice.backend.dto.LoginRequestDTO;
+import com.smartservice.backend.dto.LoginResponseDTO;
+import com.smartservice.backend.dto.UserCreateRequestDTO;
+import com.smartservice.backend.dto.UserResponseDTO;
 import com.smartservice.backend.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,17 +23,30 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody User user) {
+    public ResponseEntity<UserResponseDTO> createUser(
+            @Valid @RequestBody UserCreateRequestDTO request
+    ) {
 
-        User createdUser = userService.createUser(user);
+        UserResponseDTO createdUser =
+                userService.createUser(request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(createdUser);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponseDTO> login(
+            @Valid @RequestBody LoginRequestDTO request
+    ) {
+
+        return ResponseEntity.ok(
+                userService.login(request)
+        );
+    }
+
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
 
         return ResponseEntity.ok(
                 userService.getAllUsers()
@@ -37,7 +54,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(
+    public ResponseEntity<UserResponseDTO> getUserById(
             @PathVariable Long id
     ) {
 
