@@ -18,13 +18,16 @@ public class ComplaintService {
 
     private final ComplaintRepository complaintRepository;
     private final UserRepository userRepository;
+    private final AssignmentClient assignmentClient;
 
     public ComplaintService(
             ComplaintRepository complaintRepository,
-            UserRepository userRepository
+            UserRepository userRepository,
+            AssignmentClient assignmentClient
     ) {
         this.complaintRepository = complaintRepository;
         this.userRepository = userRepository;
+        this.assignmentClient = assignmentClient;
     }
 
     public ComplaintResponseDTO createComplaint(
@@ -48,6 +51,18 @@ public class ComplaintService {
 
         Complaint savedComplaint =
                 complaintRepository.save(complaint);
+
+        /*
+         * Automatically assign the complaint
+         * through the C# Assignment Service.
+         *
+         * Currently we use the complaint category
+         * as the department.
+         */
+        assignmentClient.autoAssign(
+                savedComplaint.getId(),
+                request.getCategory()
+        );
 
         return mapToDTO(savedComplaint);
     }
