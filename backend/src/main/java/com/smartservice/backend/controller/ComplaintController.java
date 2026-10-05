@@ -16,83 +16,69 @@ import java.util.List;
 @RequestMapping("/api/complaints")
 public class ComplaintController {
 
-    private final ComplaintService complaintService;
+        private final ComplaintService complaintService;
 
-    public ComplaintController(ComplaintService complaintService) {
-        this.complaintService = complaintService;
-    }
+        public ComplaintController(ComplaintService complaintService) {
+                this.complaintService = complaintService;
+        }
 
-    @PostMapping
-    @PreAuthorize("hasAnyRole('USER', 'EMPLOYEE', 'ADMIN')")
-    public ResponseEntity<ComplaintResponseDTO> createComplaint(
-            @RequestParam Long userId,
-            @Valid @RequestBody ComplaintCreateRequestDTO request
-    ) {
+        @PostMapping
+        @PreAuthorize("hasAnyRole('USER', 'EMPLOYEE', 'ADMIN')")
+        public ResponseEntity<ComplaintResponseDTO> createComplaint(
+                        @RequestParam Long userId,
+                        @Valid @RequestBody ComplaintCreateRequestDTO request) {
 
-        ComplaintResponseDTO createdComplaint =
-                complaintService.createComplaint(
-                        request,
-                        userId
-                );
+                ComplaintResponseDTO createdComplaint = complaintService.createComplaint(
+                                request,
+                                userId);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(createdComplaint);
-    }
+                return ResponseEntity
+                                .status(HttpStatus.CREATED)
+                                .body(createdComplaint);
+        }
 
-    @GetMapping
-    public ResponseEntity<List<ComplaintResponseDTO>>
-    getAllComplaints() {
+        @GetMapping
+        public ResponseEntity<List<ComplaintResponseDTO>> getAllComplaints() {
 
-        return ResponseEntity.ok(
-                complaintService.getAllComplaints()
-        );
-    }
+                return ResponseEntity.ok(
+                                complaintService.getAllComplaints());
+        }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ComplaintResponseDTO>
-    getComplaintById(
-            @PathVariable Long id
-    ) {
+        @GetMapping("/{id}")
+        public ResponseEntity<ComplaintResponseDTO> getComplaintById(
+                        @PathVariable Long id) {
 
-        return ResponseEntity.ok(
-                complaintService.getComplaintById(id)
-        );
-    }
+                return ResponseEntity.ok(
+                                complaintService.getComplaintById(id));
+        }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ComplaintResponseDTO>>
-    getComplaintsByUser(
-            @PathVariable Long userId
-    ) {
+        @GetMapping("/user/{userId}")
+        public ResponseEntity<List<ComplaintResponseDTO>> getComplaintsByUser(
+                        @PathVariable Long userId) {
 
-        return ResponseEntity.ok(
-                complaintService.getComplaintsByUser(userId)
-        );
-    }
+                return ResponseEntity.ok(
+                                complaintService.getComplaintsByUser(userId));
+        }
 
-    @PutMapping("/{id}/status")
-    public ResponseEntity<ComplaintResponseDTO>
-    updateStatus(
-            @PathVariable Long id,
-            @Valid @RequestBody ComplaintStatusUpdateRequestDTO request
-    ) {
+        @PutMapping("/{id}/status")
+        public ResponseEntity<ComplaintResponseDTO> updateStatus(
+                        @PathVariable Long id,
+                        @Valid @RequestBody ComplaintStatusUpdateRequestDTO request) {
+                System.out.println(
+                                "UPDATE STATUS ENDPOINT REACHED - complaintId=" + id);
 
-        return ResponseEntity.ok(
-                complaintService.updateStatus(
-                        id,
-                        request.getStatus()
-                )
-        );
-    }
+                return ResponseEntity.ok(
+                                complaintService.updateStatus(
+                                                id,
+                                                request.getStatus()));
+        }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteComplaint(
-            @PathVariable Long id
-    ) {
+        @DeleteMapping("/{id}")
+        public ResponseEntity<Void> deleteComplaint(
+                        @PathVariable Long id) {
 
-        complaintService.deleteComplaint(id);
+                complaintService.deleteComplaint(id);
 
-        return ResponseEntity.noContent().build();
-    }
+                return ResponseEntity.noContent().build();
+        }
 }

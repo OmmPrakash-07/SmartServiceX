@@ -1,0 +1,42 @@
+# Java / Maven
+backend/target/
+*.class
+
+# Spring Boot
+*.log
+
+# .NET
+dotnet-service/bin/
+dotnet-service/obj/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+python-service/.venv/
+
+# Node / React
+node_modules/
+frontend/.next/
+frontend/out/
+frontend/dist/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp

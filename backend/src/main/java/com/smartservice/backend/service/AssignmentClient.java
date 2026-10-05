@@ -9,31 +9,28 @@ import org.springframework.web.client.RestClient;
 @Service
 public class AssignmentClient {
 
-    private final RestClient restClient;
+        private final RestClient restClient;
 
-    @Value("${assignment.service.url}")
-    private String assignmentServiceUrl;
+        @Value("${assignment.service.url}")
+        private String assignmentServiceUrl;
 
-    public AssignmentClient(RestClient restClient) {
-        this.restClient = restClient;
-    }
+        public AssignmentClient(RestClient.Builder builder) {
+                this.restClient = builder.build();
+        }
 
-    public AssignmentResponseDTO autoAssign(
-            Long complaintId,
-            String department
-    ) {
+        public AssignmentResponseDTO autoAssign(
+                        Long complaintId,
+                        String department) {
 
-        AutoAssignmentRequestDTO request =
-                new AutoAssignmentRequestDTO(
-                        complaintId,
-                        department
-                );
+                AutoAssignmentRequestDTO request = new AutoAssignmentRequestDTO(
+                                complaintId,
+                                department);
 
-        return restClient
-                .post()
-                .uri(assignmentServiceUrl + "/api/assignments/auto")
-                .body(request)
-                .retrieve()
-                .body(AssignmentResponseDTO.class);
-    }
+                return restClient
+                                .post()
+                                .uri(assignmentServiceUrl + "/api/assignments/auto")
+                                .body(request)
+                                .retrieve()
+                                .body(AssignmentResponseDTO.class);
+        }
 }

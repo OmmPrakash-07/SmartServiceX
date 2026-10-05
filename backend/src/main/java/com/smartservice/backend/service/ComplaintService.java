@@ -1,10 +1,12 @@
 package com.smartservice.backend.service;
 
+import com.smartservice.backend.dto.ComplaintClassificationResponseDTO;
 import com.smartservice.backend.dto.ComplaintCreateRequestDTO;
 import com.smartservice.backend.dto.ComplaintResponseDTO;
 import com.smartservice.backend.dto.UserResponseDTO;
 import com.smartservice.backend.entity.Complaint;
 import com.smartservice.backend.entity.ComplaintStatus;
+import com.smartservice.backend.entity.Priority;
 import com.smartservice.backend.entity.User;
 import com.smartservice.backend.repository.ComplaintRepository;
 import com.smartservice.backend.repository.UserRepository;
@@ -19,15 +21,21 @@ public class ComplaintService {
     private final ComplaintRepository complaintRepository;
     private final UserRepository userRepository;
     private final AssignmentClient assignmentClient;
+    private final DepartmentMappingService departmentMappingService;
+    private final ClassificationClient classificationClient;
 
     public ComplaintService(
             ComplaintRepository complaintRepository,
             UserRepository userRepository,
-            AssignmentClient assignmentClient
+            AssignmentClient assignmentClient,
+            DepartmentMappingService departmentMappingService,
+            ClassificationClient classificationClient
     ) {
         this.complaintRepository = complaintRepository;
         this.userRepository = userRepository;
         this.assignmentClient = assignmentClient;
+        this.departmentMappingService = departmentMappingService;
+        this.classificationClient = classificationClient;
     }
 
     public ComplaintResponseDTO createComplaint(
@@ -39,11 +47,27 @@ public class ComplaintService {
                 .orElseThrow(() ->
                         new RuntimeException("User not found"));
 
+        /*
+         * Classify the complaint using the Python
+         * classification service.
+         */
+        ComplaintClassificationResponseDTO classification =
+                classificationClient.classify(
+                        request.getTitle(),
+                        request.getDescription()
+                );
+
+        /*
+         * Create the complaint using the category
+         * and priority returned by the classifier.
+         */
         Complaint complaint = new Complaint(
                 request.getTitle(),
                 request.getDescription(),
-                request.getCategory(),
-                request.getPriority(),
+                classification.getCategory(),
+                Priority.valueOf(
+                        classification.getPriority().toUpperCase()
+                ),
                 user
         );
 
@@ -53,15 +77,21 @@ public class ComplaintService {
                 complaintRepository.save(complaint);
 
         /*
+         * Determine the department from the classified
+         * complaint category.
+         */
+        String department =
+                departmentMappingService.getDepartment(
+                        classification.getCategory()
+                );
+
+        /*
          * Automatically assign the complaint
          * through the C# Assignment Service.
-         *
-         * Currently we use the complaint category
-         * as the department.
          */
         assignmentClient.autoAssign(
                 savedComplaint.getId(),
-                request.getCategory()
+                department
         );
 
         return mapToDTO(savedComplaint);
