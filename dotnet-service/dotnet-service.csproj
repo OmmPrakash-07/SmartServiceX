@@ -1,10 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>dotnet_service</RootNamespace>
+    <UserSecretsId>aaea42e1-b9d4-44cb-aede-6cb6b8907b84</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

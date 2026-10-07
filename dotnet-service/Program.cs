@@ -13,6 +13,18 @@ builder.Services.AddDbContext<SmartServiceDbContext>(options =>
     )
 );
 
+// CORS configuration
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Frontend", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -24,6 +36,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Enable CORS
+app.UseCors("Frontend");
+
 app.MapControllers();
 
-app.Run(); 
+app.Run();

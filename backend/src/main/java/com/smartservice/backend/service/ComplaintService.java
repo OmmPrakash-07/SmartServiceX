@@ -1,5 +1,6 @@
 package com.smartservice.backend.service;
 
+import com.smartservice.backend.dto.AssignmentResponseDTO;
 import com.smartservice.backend.dto.ComplaintClassificationResponseDTO;
 import com.smartservice.backend.dto.ComplaintCreateRequestDTO;
 import com.smartservice.backend.dto.ComplaintResponseDTO;
@@ -127,6 +128,26 @@ public class ComplaintService {
                 .stream()
                 .map(this::mapToDTO)
                 .toList();
+    }
+
+    /*
+     * Get assignment details from the C# Assignment Service.
+     */
+    public AssignmentResponseDTO getAssignmentByComplaintId(
+            Long complaintId
+    ) {
+
+        return assignmentClient.getAssignmentByComplaintId(
+                complaintId
+        );
+    }
+
+    /*
+     * Get all assignments from the C# Assignment Service.
+     */
+    public List<AssignmentResponseDTO> getAllAssignments() {
+
+        return assignmentClient.getAllAssignments();
     }
 
     public ComplaintResponseDTO updateStatus(

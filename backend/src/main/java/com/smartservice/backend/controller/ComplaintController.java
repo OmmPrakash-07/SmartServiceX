@@ -1,5 +1,6 @@
 package com.smartservice.backend.controller;
 
+import com.smartservice.backend.dto.AssignmentResponseDTO;
 import com.smartservice.backend.dto.ComplaintCreateRequestDTO;
 import com.smartservice.backend.dto.ComplaintResponseDTO;
 import com.smartservice.backend.dto.ComplaintStatusUpdateRequestDTO;
@@ -28,9 +29,10 @@ public class ComplaintController {
                         @RequestParam Long userId,
                         @Valid @RequestBody ComplaintCreateRequestDTO request) {
 
-                ComplaintResponseDTO createdComplaint = complaintService.createComplaint(
-                                request,
-                                userId);
+                ComplaintResponseDTO createdComplaint =
+                                complaintService.createComplaint(
+                                                request,
+                                                userId);
 
                 return ResponseEntity
                                 .status(HttpStatus.CREATED)
@@ -52,6 +54,20 @@ public class ComplaintController {
                                 complaintService.getComplaintById(id));
         }
 
+        /*
+         * Get assignment details for a complaint.
+         *
+         * React calls the Java backend instead of
+         * directly calling the C# Assignment Service.
+         */
+        @GetMapping("/{id}/assignment")
+        public ResponseEntity<AssignmentResponseDTO> getAssignmentByComplaintId(
+                        @PathVariable Long id) {
+
+                return ResponseEntity.ok(
+                                complaintService.getAssignmentByComplaintId(id));
+        }
+
         @GetMapping("/user/{userId}")
         public ResponseEntity<List<ComplaintResponseDTO>> getComplaintsByUser(
                         @PathVariable Long userId) {
@@ -64,6 +80,7 @@ public class ComplaintController {
         public ResponseEntity<ComplaintResponseDTO> updateStatus(
                         @PathVariable Long id,
                         @Valid @RequestBody ComplaintStatusUpdateRequestDTO request) {
+
                 System.out.println(
                                 "UPDATE STATUS ENDPOINT REACHED - complaintId=" + id);
 

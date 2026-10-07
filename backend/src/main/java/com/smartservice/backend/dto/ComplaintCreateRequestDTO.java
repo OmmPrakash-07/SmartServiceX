@@ -1,8 +1,6 @@
 package com.smartservice.backend.dto;
 
-import com.smartservice.backend.entity.Priority;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class ComplaintCreateRequestDTO {
@@ -14,12 +12,9 @@ public class ComplaintCreateRequestDTO {
     @NotBlank(message = "Description is required")
     private String description;
 
-    @NotBlank(message = "Category is required")
-    @Size(max = 100, message = "Category must not exceed 100 characters")
     private String category;
 
-    @NotNull(message = "Priority is required")
-    private Priority priority;
+    private String priority;
 
     public ComplaintCreateRequestDTO() {
     }
@@ -36,7 +31,7 @@ public class ComplaintCreateRequestDTO {
         return category;
     }
 
-    public Priority getPriority() {
+    public String getPriority() {
         return priority;
     }
 
@@ -52,7 +47,7 @@ public class ComplaintCreateRequestDTO {
         this.category = category;
     }
 
-    public void setPriority(Priority priority) {
+    public void setPriority(String priority) {
         this.priority = priority;
     }
 }

@@ -181,6 +181,31 @@ public class AssignmentsController : ControllerBase
         return Ok(assignment);
     }
 
+    // GET: api/assignments/complaint/{complaintId}
+    [HttpGet("complaint/{complaintId}")]
+    public async Task<IActionResult> GetByComplaintId(
+        long complaintId
+    )
+    {
+        var assignment =
+            await _context.Assignments
+                .Include(a => a.Employee)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(
+                    a => a.ComplaintId == complaintId
+                );
+
+        if (assignment == null)
+        {
+            return NotFound(new
+            {
+                message = "Assignment not found for this complaint"
+            });
+        }
+
+        return Ok(assignment);
+    }
+
     // PUT: api/assignments/{id}/status
     [HttpPut("{id}/status")]
     public async Task<IActionResult> UpdateAssignmentStatus(
