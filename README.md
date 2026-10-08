@@ -1,6 +1,6 @@
 # 🚀 SmartServiceX — Smart Service & Bug Management System
 
-SmartServiceX is a **multi-service complaint, employee assignment, and bug management system** designed to manage customer complaints from creation to resolution.
+SmartServiceX is a **multi-service complaint, employee assignment, reporting, and bug management system** designed to manage customer complaints from creation to resolution.
 
 The project demonstrates how multiple technologies can work together in a **microservice-style architecture** using:
 
@@ -10,18 +10,21 @@ The project demonstrates how multiple technologies can work together in a **micr
 
 ## 🎯 Project Objective
 
-SmartServiceX provides a centralized platform where users and support teams can:
+SmartServiceX provides a centralized platform where users, employees, and administrators can:
 
 * Create service complaints
 * Automatically classify complaints
 * Automatically determine complaint priority
-* Track complaint status
+* Map complaints to departments
 * Automatically assign complaints to available employees
-* Manage employees and their availability
+* Manage employee availability
 * Track complaint assignments
-* Manage complaint workflows
+* Track complaint status
 * Synchronize assignment and complaint statuses
-* Generate reports
+* Provide employee workflow management
+* Provide an administrator dashboard
+* Generate complaint reports
+* Monitor system data
 * Test APIs and individual services
 
 ---
@@ -31,7 +34,11 @@ SmartServiceX provides a centralized platform where users and support teams can:
 ```text
                          ┌────────────────────────┐
                          │       React UI         │
-                         │       Frontend         │
+                         │      Frontend          │
+                         │                        │
+                         │ • User Dashboard       │
+                         │ • Employee Dashboard   │
+                         │ • Admin Dashboard      │
                          └───────────┬────────────┘
                                      │
                                      ▼
@@ -45,43 +52,47 @@ SmartServiceX provides a centralized platform where users and support teams can:
                          │ • Complaint Workflow   │
                          │ • Department Mapping   │
                          │ • Assignment Gateway   │
+                         │ • Status Synchronizing │
                          └──────────┬───────┬─────┘
                                     │       │
-                     ┌──────────────┘       └──────────────┐
-                     ▼                                     ▼
-          ┌──────────────────────┐             ┌──────────────────────┐
-          │    ASP.NET Core      │             │    Python FastAPI    │
-          │  Assignment Service  │             │     AI Service       │
-          │                      │             │                      │
-          │ • Employees          │             │ • Classification     │
-          │ • Assignments        │             │ • Priority Detection │
-          │ • Auto Assignment    │             │                      │
-          │ • Availability       │             │                      │
-          └──────────┬───────────┘             └──────────────────────┘
-                     │
-                     ▼
-          ┌──────────────────────┐
-          │      PostgreSQL      │
-          │       Database       │
-          └──────────────────────┘
-
-          ┌──────────────────────┐
-          │    PHP Reporting     │
-          │       Service        │
-          │       Planned        │
-          └──────────────────────┘
+                    ┌───────────────┘       └───────────────┐
+                    ▼                                       ▼
+         ┌──────────────────────┐              ┌──────────────────────┐
+         │    ASP.NET Core      │              │    Python FastAPI    │
+         │  Assignment Service  │              │      AI Service      │
+         │                      │              │                      │
+         │ • Employees          │              │ • Classification     │
+         │ • Assignments        │              │ • Priority Detection │
+         │ • Auto Assignment    │              │                      │
+         │ • Availability       │              │                      │
+         └──────────┬───────────┘              └──────────────────────┘
+                    │
+                    ▼
+         ┌──────────────────────┐
+         │      PostgreSQL      │
+         │       Database       │
+         └──────────┬───────────┘
+                    │
+                    ▼
+         ┌──────────────────────┐
+         │    PHP Reporting     │
+         │       Service        │
+         │                      │
+         │ • Complaint Reports  │
+         │ • Status Statistics  │
+         └──────────────────────┘
 ```
 
 ### Service Communication
 
-The frontend communicates with the **Java Spring Boot backend**.
+The React frontend communicates with the **Java Spring Boot backend**.
 
 Java communicates with:
 
-* Python FastAPI for complaint classification
+* Python FastAPI for complaint classification and priority detection
 * ASP.NET Core for employee and assignment operations
 
-This avoids direct browser-to-.NET communication and provides a centralized backend gateway.
+The PHP service reads reporting data from PostgreSQL.
 
 ```text
 React
@@ -91,13 +102,20 @@ Java Spring Boot
   │
   ├──────────────► Python FastAPI
   │                  Classification
-  │                  Priority
+  │                  Priority Detection
   │
   └──────────────► ASP.NET Core
                      Employees
                      Assignments
                      Auto Assignment
+
+PostgreSQL
+  ▲
+  │
+PHP Reporting Service
 ```
+
+This architecture avoids direct browser-to-.NET communication and provides a centralized Java backend gateway.
 
 ---
 
@@ -135,33 +153,20 @@ Create Assignment
         │
         ▼
 Employee Becomes Unavailable
+        │
+        ▼
+Employee Starts Work
+        │
+        ▼
+Assignment + Complaint → IN_PROGRESS
+        │
+        ▼
+Employee Completes Work
+        │
+        ▼
+Assignment → COMPLETED
+Complaint → RESOLVED
 ```
-
-### Example
-
-A user submits:
-
-```json
-{
-  "title": "Internet connection failed",
-  "description": "My internet connection failed and I cannot access the service."
-}
-```
-
-The Python service analyzes the complaint and returns:
-
-```text
-Category: Network
-Priority: HIGH
-```
-
-Java maps:
-
-```text
-Network → IT Support
-```
-
-The ASP.NET Core service then searches for an available employee in the **IT Support** department and automatically creates an assignment.
 
 ---
 
@@ -179,16 +184,17 @@ The ASP.NET Core service then searches for an available employee in the **IT Sup
 | ASP.NET Core    | Employee & assignment service     |
 | C#              | Assignment service development    |
 | Python FastAPI  | Classification & priority service |
-| PHP             | Reporting service planned         |
+| PHP             | Reporting service                 |
 
 ## Database
 
-| Technology            | Purpose                  |
-| --------------------- | ------------------------ |
-| PostgreSQL            | Main relational database |
-| Spring Data JPA       | Java database access     |
-| Hibernate             | Java ORM                 |
-| Entity Framework Core | .NET database access     |
+| Technology               | Purpose                   |
+| ------------------------ | ------------------------- |
+| PostgreSQL               | Main relational database  |
+| Spring Data JPA          | Java database access      |
+| Hibernate                | Java ORM                  |
+| Entity Framework Core    | .NET database access      |
+| PostgreSQL PHP Extension | PHP database connectivity |
 
 ## Frontend
 
@@ -255,6 +261,9 @@ Smart-Service-Management-System/
 │   └── requirements.txt
 │
 ├── php-reporting/
+│   ├── config.php
+│   ├── reports.php
+│   └── index.php
 │
 ├── frontend/
 │   ├── src/
@@ -276,9 +285,9 @@ Smart-Service-Management-System/
 
 ---
 
-# 🔐 Authentication
+# 🔐 Authentication & Authorization
 
-SmartServiceX uses **JWT-based authentication**.
+SmartServiceX uses **JWT-based authentication** with Spring Security.
 
 ## User Registration
 
@@ -296,6 +305,10 @@ Example:
   "role": "USER"
 }
 ```
+
+Public registration creates normal `USER` accounts.
+
+Administrative and employee accounts are not allowed to be created through public registration.
 
 ## Login
 
@@ -320,6 +333,18 @@ Protected requests use:
 Authorization: Bearer <JWT_TOKEN>
 ```
 
+### Role-Based Access
+
+The system supports:
+
+```text
+USER
+EMPLOYEE
+ADMIN
+```
+
+Admin functionality is protected using role-based authorization.
+
 ---
 
 # 📋 Complaint Management
@@ -341,14 +366,17 @@ Example:
 }
 ```
 
-The frontend only requires the complaint title and description.
+The frontend only requires:
 
-The Python classification service determines the final:
+* Title
+* Description
+
+The Python classification service determines:
 
 * Category
 * Priority
 
-The submitted category and priority fields are optional for API compatibility and are not used to override the AI classification result.
+The submitted category and priority fields are optional for API compatibility and do not override the classification result.
 
 ---
 
@@ -385,7 +413,7 @@ Response:
 }
 ```
 
-### Current Classification Categories
+## Current Classification Categories
 
 ```text
 Payment
@@ -395,7 +423,7 @@ Delivery
 Technical Support
 ```
 
-### Current Priority Levels
+## Current Priority Levels
 
 ```text
 LOW
@@ -432,7 +460,7 @@ Technical Support
 Technical Support
 ```
 
-The selected department is then sent to the ASP.NET Core assignment service.
+The selected department is sent to the ASP.NET Core assignment service.
 
 ---
 
@@ -444,11 +472,8 @@ The ASP.NET Core service manages employees and complaint assignments.
 
 ```http
 POST /api/employees
-
 GET /api/employees
-
 GET /api/employees/{id}
-
 PUT /api/employees/{id}/availability
 ```
 
@@ -456,15 +481,10 @@ PUT /api/employees/{id}/availability
 
 ```http
 POST /api/assignments
-
 GET /api/assignments
-
 GET /api/assignments/{id}
-
 GET /api/assignments/complaint/{complaintId}
-
 PUT /api/assignments/{id}/status
-
 POST /api/assignments/auto
 ```
 
@@ -581,9 +601,9 @@ REOPENED
 IN_PROGRESS
 ```
 
-### Assignment & Complaint Synchronization
+## Assignment & Complaint Synchronization
 
-Employee actions automatically synchronize the complaint status.
+Employee actions automatically synchronize complaint status.
 
 When an employee starts work:
 
@@ -605,7 +625,7 @@ This synchronization is handled through the Java backend gateway.
 
 # 🖥️ React Frontend
 
-The React frontend currently provides:
+The React frontend provides:
 
 * User registration
 * User login
@@ -616,11 +636,14 @@ The React frontend currently provides:
 * Complaint details
 * Assignment information
 * Employee Dashboard
+* Admin Dashboard
+* Employee management view
 * Assignment status management
 * Complaint status synchronization
+* PHP reporting integration
 * Logout
 
-### User Dashboard
+## User Dashboard
 
 Users can:
 
@@ -631,7 +654,7 @@ Dashboard
    └── View Complaint Details
 ```
 
-### Employee Dashboard
+## Employee Dashboard
 
 Employees can:
 
@@ -644,6 +667,59 @@ Employee Dashboard
    ├── Start Work
    └── Complete Assignment
 ```
+
+## Admin Dashboard
+
+Administrators can:
+
+```text
+Admin Dashboard
+   ├── View Total Users
+   ├── View Total Complaints
+   ├── View Employees
+   ├── View Pending Assignments
+   ├── View Resolved Complaints
+   ├── View Recent Complaints
+   ├── Monitor Employee Availability
+   ├── View Complaint Reports
+   └── Refresh Dashboard Data
+```
+
+---
+
+# 📊 PHP Reporting Service
+
+SmartServiceX includes a PHP-based reporting service connected to PostgreSQL.
+
+The service provides complaint statistics such as:
+
+* Total complaints
+* Open complaints
+* Assigned complaints
+* In-progress complaints
+* Resolved complaints
+* Closed complaints
+
+## Reporting Endpoint
+
+```http
+GET /reports.php
+```
+
+Example response:
+
+```json
+{
+  "totalComplaints": 28,
+  "openComplaints": 25,
+  "assignedComplaints": 0,
+  "inProgressComplaints": 1,
+  "resolvedComplaints": 1,
+  "closedComplaints": 1
+}
+```
+
+The React Admin Dashboard consumes this reporting service and displays the statistics.
 
 ---
 
@@ -671,7 +747,7 @@ Employee
 Assignment
 ```
 
-Both services currently use the same PostgreSQL database for this learning and portfolio project.
+Both Java and .NET currently use the same PostgreSQL database for this learning and portfolio project.
 
 > In a production microservice architecture, database ownership would preferably be separated by service.
 
@@ -681,29 +757,14 @@ Both services currently use the same PostgreSQL database for this learning and p
 
 During development, services run independently.
 
-### Java Spring Boot
-
-```text
-http://localhost:8080
-```
-
-### ASP.NET Core Assignment Service
-
-```text
-http://localhost:5094
-```
-
-### Python FastAPI
-
-```text
-http://localhost:8000
-```
-
-### React Frontend
-
-```text
-http://localhost:5173
-```
+| Service          | URL                   |
+| ---------------- | --------------------- |
+| React Frontend   | http://localhost:5173 |
+| Java Spring Boot | http://localhost:8080 |
+| ASP.NET Core     | http://localhost:5094 |
+| Python FastAPI   | http://localhost:8000 |
+| PHP Reporting    | http://localhost:8081 |
+| PostgreSQL       | localhost:5432        |
 
 ---
 
@@ -731,6 +792,7 @@ Tested functionality includes:
 * Employee reassignment
 * Java → C# integration
 * Java → Python integration
+* PHP → PostgreSQL reporting
 * Error handling
 * Request validation
 
@@ -744,10 +806,13 @@ SmartServiceX implements:
 * BCrypt password hashing
 * Stateless authentication
 * Protected REST endpoints
+* Role-based authorization
+* Admin-only endpoints
 * Input validation
 * Global exception handling
 * Password exclusion from user response DTOs
 * CORS configuration
+* Environment-based database credentials
 
 > **Never commit real database passwords, JWT secrets, API keys, or other credentials to GitHub.**
 
@@ -764,6 +829,7 @@ Use environment variables, User Secrets, or another secure secret-management sys
 | User Registration                | ✅ Completed |
 | JWT Login                        | ✅ Completed |
 | BCrypt Password Hashing          | ✅ Completed |
+| Role-Based Authorization         | ✅ Completed |
 | Complaint Management             | ✅ Completed |
 | Complaint Status Workflow        | ✅ Tested    |
 | Global Exception Handling        | ✅ Completed |
@@ -781,28 +847,65 @@ Use environment variables, User Secrets, or another secure secret-management sys
 | React Frontend                   | ✅ Completed |
 | User Dashboard                   | ✅ Completed |
 | Employee Dashboard               | ✅ Completed |
+| Admin Dashboard                  | ✅ Completed |
+| Employee Management Dashboard    | ✅ Completed |
 | Assignment/Complaint Status Sync | ✅ Tested    |
-| PHP Reporting                    | 🚧 Planned  |
-| Automated Test Suite             | 🚧 Planned  |
-| Docker Containerization          | 🚧 Planned  |
-| CI/CD Pipeline                   | 🚧 Planned  |
-| Production Deployment            | 🚧 Planned  |
+| PHP Reporting Service            | ✅ Completed |
+| PHP → PostgreSQL Integration     | ✅ Tested    |
+| End-to-End Workflow              | ✅ Tested    |
+| API Testing                      | ✅ Completed |
 
 ---
 
-# 🧪 Verified End-to-End Example
+# 🧪 Verified End-to-End Workflow
 
 A complete complaint workflow has been successfully tested.
 
-Example complaint:
+Example:
+
+```text
+User Registration
+       ↓
+User Login
+       ↓
+Create Complaint
+       ↓
+Python Classification
+       ↓
+Category + Priority
+       ↓
+Department Mapping
+       ↓
+Automatic Employee Assignment
+       ↓
+Employee Dashboard
+       ↓
+Start Work
+       ↓
+Assignment = IN_PROGRESS
+Complaint = IN_PROGRESS
+       ↓
+Complete Assignment
+       ↓
+Assignment = COMPLETED
+Complaint = RESOLVED
+       ↓
+Admin Dashboard
+       ↓
+PHP Reporting
+       ↓
+PostgreSQL Statistics
+```
+
+### Example Complaint
 
 ```text
 Title:
-My internet is not working
+My internet connection is slow
 
 Description:
-My WiFi and internet connection are completely down.
-I cannot access any websites.
+My WiFi connection is very slow and I am having problems
+accessing websites.
 ```
 
 ### Step 1 — Python Classification
@@ -844,31 +947,43 @@ Assignment = COMPLETED
 Complaint  = RESOLVED
 ```
 
-The assignment and complaint statuses were successfully synchronized through the Java backend.
+### Step 6 — Admin Reporting
+
+```text
+Admin Dashboard
+      ↓
+PHP Reporting Service
+      ↓
+PostgreSQL
+      ↓
+Complaint Statistics
+```
+
+The complete workflow was successfully verified across all major services.
 
 ---
 
 # 🚀 Future Improvements
 
-Planned improvements include:
+The core project is currently functional. Possible future improvements include:
 
-* Admin dashboard
-* PHP reporting portal
 * Advanced AI-based priority prediction
-* Improved complaint classification
+* Improved NLP complaint classification
 * Service-to-service authentication
 * Better inter-service error handling
 * Email notifications
-* Complaint analytics
+* Complaint analytics and charts
 * Docker containerization
 * Docker Compose
 * CI/CD pipeline
 * Automated unit and integration testing
-* API documentation
+* OpenAPI/Swagger documentation
 * Production deployment
 * Database-per-service architecture
-* Role-based admin controls
-* Advanced reporting and analytics
+* Advanced reporting
+* Audit logging
+* Real-time notifications
+* Cloud deployment
 
 ---
 
@@ -885,6 +1000,7 @@ This project demonstrates practical experience with:
 * ASP.NET Core
 * C#
 * Python FastAPI
+* PHP
 * PostgreSQL
 * Spring Data JPA
 * Hibernate
@@ -898,11 +1014,14 @@ This project demonstrates practical experience with:
 * Automatic assignment
 * Employee availability management
 * Complaint classification
+* Complaint priority detection
 * Complaint workflow management
+* Status synchronization
 * Exception handling
 * API validation
 * Postman API testing
-* Git & GitHub
+* Git
+* GitHub
 
 ---
 
@@ -916,7 +1035,7 @@ This project demonstrates practical experience with:
 
 ```text
 Java • Spring Boot • C# • ASP.NET Core
-Python • FastAPI • PostgreSQL
+Python • FastAPI • PHP • PostgreSQL
 React • REST APIs • JWT
 Git • GitHub • Postman
 ```
@@ -925,6 +1044,8 @@ Git • GitHub • Postman
 
 # ⭐ Project
 
-If you find **SmartServiceX** useful or interesting, consider giving the repository a ⭐.
-
 **SmartServiceX — Smart Service & Bug Management System**
+
+A multi-service platform demonstrating complaint management, AI-based classification, automatic employee assignment, workflow synchronization, administration, and reporting using multiple backend technologies.
+
+If you find **SmartServiceX** useful or interesting, consider giving the repository a ⭐.
