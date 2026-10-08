@@ -99,4 +99,20 @@ public class AssignmentClient {
                 .retrieve()
                 .body(AssignmentResponseDTO.class);
     }
+
+    public List<AssignmentResponseDTO.EmployeeResponseDTO> getAllEmployees() {
+
+        AssignmentResponseDTO.EmployeeResponseDTO[] employees =
+                restClient
+                        .get()
+                        .uri(assignmentServiceUrl + "/api/employees")
+                        .retrieve()
+                        .body(AssignmentResponseDTO.EmployeeResponseDTO[].class);
+
+        if (employees == null) {
+            return List.of();
+        }
+
+        return Arrays.asList(employees);
+    }
 }

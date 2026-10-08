@@ -8,6 +8,8 @@ import CreateComplaint from "./pages/CreateComplaint";
 import Complaints from "./pages/Complaints";
 import ComplaintDetails from "./pages/ComplaintDetails";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminRoute from "./components/AdminRoute";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
@@ -41,6 +43,17 @@ function App() {
                 <Navbar />
                 <EmployeeDashboard />
               </ProtectedRoute>
+            }
+          />
+
+          {/* Admin Dashboard */}
+          <Route
+            path="/admin-dashboard"
+            element={
+              <AdminRoute>
+                <Navbar />
+                <AdminDashboard />
+              </AdminRoute>
             }
           />
 

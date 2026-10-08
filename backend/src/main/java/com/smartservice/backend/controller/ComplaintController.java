@@ -40,6 +40,7 @@ public class ComplaintController {
         }
 
         @GetMapping
+        @PreAuthorize("hasRole('ADMIN')")
         public ResponseEntity<List<ComplaintResponseDTO>> getAllComplaints() {
 
                 return ResponseEntity.ok(

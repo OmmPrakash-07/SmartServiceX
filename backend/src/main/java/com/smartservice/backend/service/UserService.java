@@ -32,6 +32,15 @@ public class UserService {
 
     public UserResponseDTO createUser(UserCreateRequestDTO request) {
 
+        if (request.getRole() != null &&
+                (request.getRole().name().equals("ADMIN") ||
+                 request.getRole().name().equals("EMPLOYEE"))) {
+
+            throw new RuntimeException(
+                    "Admin and Employee users cannot be created through public registration"
+            );
+        }
+
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already registered");
         }

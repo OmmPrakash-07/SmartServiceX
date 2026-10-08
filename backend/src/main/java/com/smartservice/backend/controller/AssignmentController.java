@@ -5,6 +5,7 @@ import com.smartservice.backend.entity.ComplaintStatus;
 import com.smartservice.backend.service.AssignmentClient;
 import com.smartservice.backend.service.ComplaintService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,10 +26,20 @@ public class AssignmentController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<AssignmentResponseDTO>> getAllAssignments() {
 
         return ResponseEntity.ok(
                 assignmentClient.getAllAssignments()
+        );
+    }
+
+    @GetMapping("/employees")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<AssignmentResponseDTO.EmployeeResponseDTO>> getAllEmployees() {
+
+        return ResponseEntity.ok(
+                assignmentClient.getAllEmployees()
         );
     }
 

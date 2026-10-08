@@ -20,17 +20,12 @@ function Navbar() {
   return (
     <nav className="bg-white border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-
         {/* Logo */}
-        <Link
-          to="/dashboard"
-          className="text-2xl font-bold text-blue-600"
-        >
+        <Link to="/dashboard" className="text-2xl font-bold text-blue-600">
           SmartServiceX
         </Link>
 
         <div className="flex items-center gap-5">
-
           {/* User Dashboard */}
           <Link
             to="/dashboard"
@@ -48,6 +43,17 @@ function Navbar() {
             >
               <BriefcaseBusiness size={18} />
               Employee Dashboard
+            </Link>
+          )}
+
+          {/* Admin Dashboard */}
+          {user?.role === "ADMIN" && (
+            <Link
+              to="/admin-dashboard"
+              className="hidden md:flex items-center gap-2 text-slate-600 hover:text-blue-600"
+            >
+              <LayoutDashboard size={18} />
+              Admin Dashboard
             </Link>
           )}
 
@@ -82,7 +88,6 @@ function Navbar() {
             <LogOut size={18} />
             Logout
           </button>
-
         </div>
       </div>
     </nav>
