@@ -1088,3 +1088,16 @@ Configure credentials and secrets in the hosting provider's environment settings
 | `PORT` | Port assigned by the hosting platform |
 
 Set these variables in the backend hosting provider's environment settings. Use a sufficiently long, randomly generated JWT secret compatible with the application's signing algorithm. Do not commit secrets to Git.
+
+### Python FastAPI classification service
+
+The Python service provides complaint category and priority classification.
+
+- Health check: `GET /`
+- Classification endpoint: `POST /api/classify`
+- Dockerfile: `python-service/Dockerfile`
+- Application entry point: `app.main:app`
+
+Deploy `python-service` using the repository's root directory and set its Dockerfile path to `python-service/Dockerfile` in the hosting provider.
+
+Configure `CLASSIFICATION_SERVICE_URL` in the Java backend using the deployed Python service's base URL, without appending `/api/classify` unless the Java client expects a complete endpoint URL. The current classifier uses keyword-based rules rather than a trained machine-learning model.
