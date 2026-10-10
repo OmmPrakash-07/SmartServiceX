@@ -1,4 +1,4 @@
-import axios from "axios";
+﻿import axios from "axios";
 import { useEffect, useState } from "react";
 import {
   Users,
@@ -37,7 +37,7 @@ function AdminDashboard() {
         api.get("/complaints"),
         api.get("/assignments"),
         api.get("/assignments/employees"),
-        axios.get("http://localhost:8081/reports.php"),
+        axios.get(import.meta.env.VITE_REPORTING_SERVICE_URL || "http://localhost:8081/reports.php"),
       ]);
 
       setUsers(usersResponse.data || []);

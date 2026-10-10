@@ -1049,3 +1049,27 @@ Git • GitHub • Postman
 A multi-service platform demonstrating complaint management, AI-based classification, automatic employee assignment, workflow synchronization, administration, and reporting using multiple backend technologies.
 
 If you find **SmartServiceX** useful or interesting, consider giving the repository a ⭐.
+
+## Deployment Configuration
+
+### Frontend environment variables
+
+| Variable | Purpose |
+|---|---|
+| `VITE_API_BASE_URL` | Java backend API base URL |
+| `VITE_REPORTING_SERVICE_URL` | PHP reporting endpoint URL |
+
+Use `frontend/.env.example` as a reference for local development. Set production values in your frontend hosting provider's environment settings.
+
+### PHP reporting environment variables
+
+| Variable | Purpose |
+|---|---|
+| `DB_HOST` | PostgreSQL hostname |
+| `DB_PORT` | PostgreSQL port |
+| `DB_NAME` | Database name |
+| `DB_USER` | Database username |
+| `DB_PASSWORD` | Database password |
+| `FRONTEND_URL` | Allowed frontend origin for CORS |
+
+Configure credentials and secrets in the hosting provider's environment settings. Never commit passwords, tokens, or production secrets to Git.
