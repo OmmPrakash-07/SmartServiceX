@@ -1070,7 +1070,14 @@ Use `frontend/.env.example` as a reference for local development. Set production
 | `DB_NAME` | Database name |
 | `DB_USER` | Database username |
 | `DB_PASSWORD` | Database password |
+| `DB_SSLMODE` | PostgreSQL SSL mode; use `require` for Supabase |
 | `FRONTEND_URL` | Allowed frontend origin for CORS |
+
+For Render deployment, select Docker and use the repository root as the build context. Set the Dockerfile path to `php-reporting/Dockerfile`.
+
+Configure `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_SSLMODE`, and `FRONTEND_URL` in Render environment settings. Use your Supabase connection details and keep the password private.
+
+The service health endpoint is `/`, and complaint statistics are available at `/reports.php`.
 
 Configure credentials and secrets in the hosting provider's environment settings. Never commit passwords, tokens, or production secrets to Git.
 

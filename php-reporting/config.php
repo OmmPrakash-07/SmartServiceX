@@ -5,6 +5,7 @@ $port = getenv("DB_PORT") ?: "5432";
 $dbname = getenv("DB_NAME") ?: "smart_service_db";
 $user = getenv("DB_USER") ?: "postgres";
 $password = getenv("DB_PASSWORD");
+$sslmode = getenv("DB_SSLMODE") ?: "require";
 
 if ($password === false || $password === "") {
     http_response_code(500);
@@ -14,7 +15,7 @@ if ($password === false || $password === "") {
 }
 
 $conn = pg_connect(
-    "host=$host port=$port dbname=$dbname user=$user password=$password connect_timeout=10"
+    "host=$host port=$port dbname=$dbname user=$user password=$password sslmode=$sslmode connect_timeout=10"
 );
 
 if (!$conn) {
