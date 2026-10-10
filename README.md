@@ -1101,3 +1101,16 @@ The Python service provides complaint category and priority classification.
 Deploy `python-service` using the repository's root directory and set its Dockerfile path to `python-service/Dockerfile` in the hosting provider.
 
 Configure `CLASSIFICATION_SERVICE_URL` in the Java backend using the deployed Python service's base URL, without appending `/api/classify` unless the Java client expects a complete endpoint URL. The current classifier uses keyword-based rules rather than a trained machine-learning model.
+
+### .NET assignment service
+
+The .NET 10 service manages employees and assignments using Entity Framework Core and PostgreSQL.
+
+- Dockerfile: `dotnet-service/Dockerfile`
+- Database configuration: `ConnectionStrings__DefaultConnection`
+- Frontend CORS origin: `FRONTEND_URL`
+- Tables managed by this service: `Employees` and `Assignments`
+
+For Render deployment, select Docker and set the Dockerfile path to `dotnet-service/Dockerfile` from the repository root.
+
+Configure `ConnectionStrings__DefaultConnection` as a Render environment variable using the hosted PostgreSQL connection string. Set `FRONTEND_URL` to the deployed Vercel frontend origin. Do not put database credentials in `appsettings.json` or commit them to Git.

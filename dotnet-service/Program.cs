@@ -1,25 +1,33 @@
-using dotnet_service.Data;
+﻿using dotnet_service.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+var connectionString =
+    builder.Configuration.GetConnectionString("DefaultConnection");
+
+if (string.IsNullOrWhiteSpace(connectionString))
+{
+    throw new InvalidOperationException(
+        "Database connection is missing. Configure ConnectionStrings__DefaultConnection."
+    );
+}
+
 builder.Services.AddDbContext<SmartServiceDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString(
-            "DefaultConnection"
-        )
-    )
+    options.UseNpgsql(connectionString)
 );
 
-// CORS configuration
+var frontendUrl = builder.Configuration["FRONTEND_URL"]
+    ?? "http://localhost:5173";
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
     {
         policy
-            .WithOrigins("http://localhost:5173")
+            .WithOrigins(frontendUrl)
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
@@ -36,7 +44,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Enable CORS
 app.UseCors("Frontend");
 
 app.MapControllers();
