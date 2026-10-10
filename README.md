@@ -1091,6 +1091,8 @@ Set these variables in the backend hosting provider's environment settings. Use 
 
 ### Python FastAPI classification service
 
+- Render build configuration: use Docker as the runtime and the repository root as the build context; set the Dockerfile path to `python-service/Dockerfile`.
+
 The Python service provides complaint category and priority classification.
 
 - Health check: `GET /`
