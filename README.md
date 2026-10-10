@@ -1073,3 +1073,18 @@ Use `frontend/.env.example` as a reference for local development. Set production
 | `FRONTEND_URL` | Allowed frontend origin for CORS |
 
 Configure credentials and secrets in the hosting provider's environment settings. Never commit passwords, tokens, or production secrets to Git.
+
+### Java Spring Boot backend environment variables
+
+| Variable | Purpose |
+|---|---|
+| `SPRING_DATASOURCE_URL` | Hosted PostgreSQL JDBC URL |
+| `SPRING_DATASOURCE_USERNAME` | Database username |
+| `SPRING_DATASOURCE_PASSWORD` | Database password |
+| `JWT_SECRET` | Strong signing secret for JWT tokens |
+| `JWT_EXPIRATION` | Token lifetime in milliseconds |
+| `ASSIGNMENT_SERVICE_URL` | Deployed .NET assignment service base URL |
+| `CLASSIFICATION_SERVICE_URL` | Deployed Python classification service base URL |
+| `PORT` | Port assigned by the hosting platform |
+
+Set these variables in the backend hosting provider's environment settings. Use a sufficiently long, randomly generated JWT secret compatible with the application's signing algorithm. Do not commit secrets to Git.
