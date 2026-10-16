@@ -27,6 +27,9 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "token_version", nullable = false, columnDefinition = "bigint not null default 0")
+    private long tokenVersion;
+
     public User() {
     }
 
@@ -92,4 +95,8 @@ public class User {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
+
+    public long getTokenVersion() { return tokenVersion; }
+
+    public void setTokenVersion(long tokenVersion) { this.tokenVersion = tokenVersion; }
 }

@@ -1090,11 +1090,20 @@ Configure credentials and secrets in the hosting provider's environment settings
 | `SPRING_DATASOURCE_PASSWORD` | Database password |
 | `JWT_SECRET` | Strong signing secret for JWT tokens |
 | `JWT_EXPIRATION` | Token lifetime in milliseconds |
+| `FRONTEND_URL` | Deployed Vercel origin used for reset links and Java backend CORS |
+| `RESEND_API_KEY` | Resend API key used to deliver reset emails |
+| `MAIL_FROM` | Verified Resend sender, for example `SmartServiceX <no-reply@example.com>` |
 | `ASSIGNMENT_SERVICE_URL` | Deployed .NET assignment service base URL |
 | `CLASSIFICATION_SERVICE_URL` | Deployed Python classification service base URL |
 | `PORT` | Port assigned by the hosting platform |
 
 Set these variables in the backend hosting provider's environment settings. Use a sufficiently long, randomly generated JWT secret compatible with the application's signing algorithm. Do not commit secrets to Git.
+
+Password reset uses `POST /api/auth/forgot-password` and `POST /api/auth/reset-password`. The API returns the same generic message for registered and unknown addresses. Reset tokens are random, stored as SHA-256 hashes, expire after 15 minutes, and are single-use. Password reset increments the user's `token_version`, invalidating previously issued JWTs. Hibernate's existing `ddl-auto=update` setting adds the column with a zero default, so existing users and tokens remain compatible; no manual SQL is required.
+
+Set the Vercel frontend origin (without a trailing slash) as `FRONTEND_URL`. Set `VITE_API_BASE_URL` in Vercel to the Render API base ending in `/api`; locally, `frontend/.env.example` supplies `http://localhost:8080/api`. `VITE_API_URL` remains supported for deployments that provide the host without `/api`.
+
+Configure production rate limiting at the edge (for example, a Render-compatible reverse proxy/WAF or gateway) for both reset routes, keyed by client IP and normalized email, with a low request ceiling and shared storage across instances. The backend does not implement an in-process limiter, which would be bypassable across multiple instances. Ensure proxy headers are trusted only from the hosting provider so client IP limits cannot be spoofed.
 
 ### Python FastAPI classification service
 

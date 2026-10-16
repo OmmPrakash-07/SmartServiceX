@@ -13,14 +13,17 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
+import com.smartservice.backend.repository.UserRepository;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final UserRepository users;
 
-    public JwtAuthenticationFilter(JwtService jwtService) {
+    public JwtAuthenticationFilter(JwtService jwtService, UserRepository users) {
         this.jwtService = jwtService;
+        this.users = users;
     }
 
     @Override
@@ -48,6 +51,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String email = jwtService.extractEmail(token);
+
+        var user = users.findByEmail(email);
+        if (user.isEmpty() || !jwtService.isTokenValidForUser(token, user.get())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         String role = jwtService.extractRole(token);
 
